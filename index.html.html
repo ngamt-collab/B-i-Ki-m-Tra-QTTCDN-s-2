@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc nghiệm Quản trị Tài chính Doanh nghiệp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        /* Form Login */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Quiz UI */
+        .hidden { display: none !important; }
+
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .timer {
+            text-align: right;
+            color: #ef4444;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .answers-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .answer-btn {
+            padding: 1rem;
+            text-align: left;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-btn:hover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .answer-btn.selected {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-outline { background: #e2e8f0; color: var(--text-color); }
+        .btn-submit { background: #ef4444; color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Result View */
+        .result-card {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--success-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem auto;
+        }
+
+        .score-circle span {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .remark {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 1.2rem; }
+            .controls { flex-direction: column; gap: 1rem; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Trắc nghiệm Quản trị Tài chính Doanh nghiệp</h1>
+
+    <div id="login-screen">
+        <form id="login-form">
+            <div class="form-group">
+                <label>Mã sinh viên</label>
+                <input type="text" id="studentId" required placeholder="Nhập mã sinh viên...">
+            </div>
+            <div class="form-group">
+                <label>Họ tên</label>
+                <input type="text" id="fullname" required placeholder="Nhập họ và tên...">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" required placeholder="Nhập email...">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Bắt đầu làm bài</button>
+        </form>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div class="progress-container">
+            <div class="progress-info">
+                <span id="question-number">Câu 1/30</span>
+                <span id="timer-display">Thời gian: 60s</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div id="question-container">
+            <p class="question-text" id="question-text">Đang tải câu hỏi...</p>
+            <div class="answers-grid" id="answer-buttons">
+                </div>
+        </div>
+
+        <div class="controls">
+            <button id="prev-btn" class="btn btn-outline">Quay lại</button>
+            <button id="next-btn" class="btn btn-primary">Tiếp theo</button>
+            <button id="submit-btn" class="btn btn-submit hidden">Nộp bài</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <div class="result-card">
+            <h2>Kết quả bài kiểm tra</h2>
+            <div class="score-circle">
+                <span id="final-score">0/300</span>
+                <small>Điểm</small>
+            </div>
+            <p id="result-stats">Số câu đúng: 0/30 (0%)</p>
+            <p class="remark" id="remark">Nhận xét: Đang tính...</p>
+            <p style="margin-top: 1rem; color: #64748b;">Thông tin đã được lưu vào hệ thống.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DỮ LIỆU CÂU HỎI
+    const allQuestions = {
+        chuong2: [
+            { question: "Công ty Hùng Minh chuyển đổi các điều kiện bán hàng từ “3/15 net 30” sang “6/10 net 30”, điều đó đồng nghĩa với việc:", answers: [{text: "Giảm chiết khấu bán hàng và tăng thời gian giao hàng", correct: false}, {text: "Giảm chiết khấu bán hàng và tăng thời kỳ tín dụng thương mại", correct: false}, {text: "Tăng chiết khấu bán hàng và giảm thời kỳ tín dụng thương mại", correct: false}, {text: "Tăng chiết khấu bán hàng và giảm thời kỳ chiết khấu thương mại", correct: true}] },
+            { question: "Công ty Hải Anh phải dùng xi măng với nhu cầu 20,000 tấn/năm. Chi phí đặt hàng mỗi lần là 1,000,000 đồng/đơn hàng. Chi phí lưu kho là 250,000 đồng/tấn. Khi đó, lượng xi măng tối ưu mỗi lần đặt mua là:", answers: [{text: "200 tấn", correct: false}, {text: "300 tấn", correct: false}, {text: "400 tấn", correct: true}, {text: "500 tấn", correct: false}] },
+            { question: "Công ty Hải Anh nhu cầu 20,000 tấn/năm. Chi phí đặt hàng 1,000,000 đồng/đơn. Chi phí lưu kho 250,000 đồng/tấn. Mức tồn kho bình quân là:", answers: [{text: "100 tấn", correct: false}, {text: "200 tấn", correct: true}, {text: "300 tấn", correct: false}, {text: "400 tấn", correct: false}] },
+            { question: "Công ty Hải Anh nhu cầu 20,000 tấn/năm. Chi phí đặt hàng 1,000,000 đồng/đơn. Chi phí lưu kho 250,000 đồng/tấn. Số lần đặt hàng tối ưu là:", answers: [{text: "50 lần", correct: false}, {text: "60 lần", correct: false}, {text: "70 lần", correct: false}, {text: "80 lần", correct: true}] },
+            { question: "Công ty Thủy Tiên nhu cầu vải 40,000 mét/năm. Giá mua 60,000 đồng/mét, chi phí đặt hàng 1,800,000 đồng, chi phí tồn trữ 15% giá mua. Số mét vải tối ưu mỗi lần đặt:", answers: [{text: "1,000 mét", correct: false}, {text: "2,000 mét", correct: false}, {text: "3,000 mét", correct: false}, {text: "4,000 mét", correct: true}] },
+            { question: "Công ty Thủy Tiên nhu cầu 40,000 mét/năm. Chi phí đặt hàng 1,800,000 đồng, tồn trữ 15% giá mua. Chi phí đặt hàng trong năm là:", answers: [{text: "10 triệu đồng", correct: false}, {text: "18 triệu đồng", correct: true}, {text: "20 triệu đồng", correct: false}, {text: "25 triệu đồng", correct: false}] },
+            { question: "Công ty Thủy Tiên nhu cầu 40,000 mét/năm. Giá 60,000đ, đặt hàng 1.8tr, tồn trữ 15%. Chi phí lưu kho trong năm là:", answers: [{text: "15 triệu đồng", correct: false}, {text: "17 triệu đồng", correct: false}, {text: "18 triệu đồng", correct: true}, {text: "20 triệu đồng", correct: false}] },
+            { question: "Công ty Thủy Tiên nhu cầu 40,000 mét/năm. Chờ hàng 5 ngày. Năm 360 ngày. Điểm đặt hàng lại là:", answers: [{text: "555.56 mét", correct: true}, {text: "589.90 mét", correct: false}, {text: "600 mét", correct: false}, {text: "650 mét", correct: false}] },
+            { question: "Công ty Thủy Tiên nhu cầu 40,000 mét. Chờ hàng 5 ngày, dự trữ an toàn 4 ngày. Điểm đặt hàng an toàn là:", answers: [{text: "500 mét", correct: false}, {text: "700 mét", correct: false}, {text: "1,000 mét", correct: true}, {text: "1,500 mét", correct: false}] },
+            { question: "Công ty Thủy Tiên nhu cầu 40,000 mét. Đặt hàng 1.8tr, tồn trữ 15% giá 60k. Tổng chi phí dự trữ tồn kho năm là:", answers: [{text: "30 triệu đồng", correct: false}, {text: "36 triệu đồng", correct: true}, {text: "45 triệu đồng", correct: false}, {text: "50 triệu đồng", correct: false}] }
+        ],
+        chuong3: [
+            { question: "Năm N công ty AAP: Khoản phải thu bình quân 3,738tr, tồn kho 1,080tr, phải trả 1,450tr. Doanh thu 15,120tr, giá vốn 12,150tr. Chu kỳ kinh doanh là:", answers: [{text: "121 ngày", correct: true}, {text: "89 ngày", correct: false}, {text: "119 ngày", correct: false}, {text: "124 ngày", correct: false}] },
+            { question: "Năm N công ty TTP: Phải thu 576tr, tồn kho 483tr, phải trả 345tr. Doanh thu 11,520tr, giá vốn 8280tr. Chu kỳ tiền mặt là:", answers: [{text: "39 ngày", correct: false}, {text: "24 ngày", correct: true}, {text: "33 ngày", correct: false}, {text: "36 ngày", correct: false}] },
+            { question: "Công ty An Bình kỳ thu tiền 15 ngày, Phải thu đầu năm 2,750tr, cuối năm 2,380tr. Doanh thu thuần năm N là:", answers: [{text: "57,600 triệu đồng", correct: false}, {text: "60,480 triệu đồng", correct: false}, {text: "61,560 triệu đồng", correct: true}, {text: "63,000 triệu đồng", correct: false}] },
+            { question: "Công ty Nhất Tín kỳ thu tiền bình quân 20 ngày. Số lần thu tiền trong năm là:", answers: [{text: "18 vòng", correct: true}, {text: "5 vòng", correct: false}, {text: "20 vòng", correct: false}, {text: "16 vòng", correct: false}] },
+            { question: "Công ty THP doanh thu 350tr, lợi nhuận gộp 100tr, tồn kho bình quân 50tr. Số lần dự trữ hàng tồn kho là:", answers: [{text: "3 vòng", correct: false}, {text: "5 vòng", correct: true}, {text: "6 vòng", correct: false}, {text: "4 vòng", correct: false}] }
+        ],
+        chuong4: [
+            { question: "Trong các tài sản sau, tài sản nào là tài sản cố định vô hình:", answers: [{text: "Nhà cửa", correct: false}, {text: "Máy móc", correct: false}, {text: "Nhãn hiệu", correct: true}, {text: "Thiết bị truyền dẫn", correct: false}] },
+            { question: "Nguyên giá tài sản cố định bao gồm:", answers: [{text: "Giá mua", correct: false}, {text: "Chi phí vận chuyển, lắp đặt", correct: false}, {text: "Chi phí thuế", correct: false}, {text: "Toàn bộ chi phí để có được tài sản ở trạng thái sẵn sàng hoạt động", correct: true}] },
+            { question: "Công ty Xuân Thu mua TSCĐ giá 240tr, chi phí liên quan 30tr, chiết khấu 5%. Tuổi thọ 10 năm. Khấu hao trung bình năm là:", answers: [{text: "20 triệu đồng", correct: false}, {text: "28.2 triệu đồng", correct: true}, {text: "34 triệu đồng", correct: false}, {text: "42 triệu đồng", correct: false}] },
+            { question: "Công ty Bình An mua TSCĐ 250tr (gồm VAT), chi phí khác 50tr. Sử dụng 5 năm. Tính khấu hao đường thẳng từ năm thứ mấy (giảm dần có ĐC)?", answers: [{text: "Từ năm thứ 2", correct: false}, {text: "Từ năm thứ 3", correct: false}, {text: "Từ năm thứ 4", correct: true}, {text: "Không có đáp án đúng", correct: false}] }
+        ],
+        chuong5: [
+            { question: "Lợi nhuận giữ lại là nguồn vốn từ:", answers: [{text: "Nợ phải trả", correct: false}, {text: "Vốn chủ sở hữu", correct: true}, {text: "Vốn vay ngân hàng", correct: false}, {text: "Tín dụng thương mại", correct: false}] },
+            { question: "Chi phí vốn là:", answers: [{text: "Tỷ suất sinh lời tối thiểu", correct: true}, {text: "Lợi nhuận gộp", correct: false}, {text: "Tổng chi phí sản xuất", correct: false}, {text: "Thuế TNDN", correct: false}] },
+            { question: "Ưu điểm của huy động vốn bằng phát hành cổ phiếu thường:", answers: [{text: "Không bắt buộc trả cổ tức", correct: true}, {text: "Chi phí thấp", correct: false}, {text: "Không làm loãng quyền kiểm soát", correct: false}, {text: "Được khấu trừ thuế", correct: false}] },
+            { question: "Đòn bẩy tài chính thể hiện mối quan hệ giữa:", answers: [{text: "EBIT và EPS", correct: true}, {text: "Doanh thu và EBIT", correct: false}, {text: "Giá vốn và EBIT", correct: false}, {text: "Nợ và Tài sản", correct: false}] },
+            { question: "Chỉ số WACC là viết tắt của:", answers: [{text: "Chi phí vốn bình quân gia quyền", correct: true}, {text: "Lợi nhuận trên vốn", correct: false}, {text: "Tỷ suất thuế", correct: false}, {text: "Vốn lưu động", correct: false}] },
+            { question: "Vốn nợ thường có chi phí thấp hơn vốn chủ sở hữu vì:", answers: [{text: "Có lá chắn thuế", correct: true}, {text: "Rủi ro cao hơn", correct: false}, {text: "Lợi nhuận cao hơn", correct: false}, {text: "Không phải trả lãi", correct: false}] }
+        ],
+        chuong6: [
+            { question: "Giá trị hiện tại ròng (NPV) dương nghĩa là:", answers: [{text: "Dự án nên được chấp nhận", correct: true}, {text: "Dự án lỗ", correct: false}, {text: "Dự án hòa vốn", correct: false}, {text: "NPV không liên quan", correct: false}] },
+            { question: "Tỷ suất sinh lời nội bộ (IRR) là mức lãi suất mà tại đó:", answers: [{text: "NPV = 0", correct: true}, {text: "NPV cực đại", correct: false}, {text: "EBIT = 0", correct: false}, {text: "Lợi nhuận = 0", correct: false}] },
+            { question: "Thời gian hoàn vốn (PP) là:", answers: [{text: "Thời gian để thu hồi vốn đầu tư ban đầu", correct: true}, {text: "Thời gian kết thúc dự án", correct: false}, {text: "Tuổi thọ TSCĐ", correct: false}, {text: "Thời gian trả nợ vay", correct: false}] },
+            { question: "Dòng tiền thuần của dự án bao gồm:", answers: [{text: "Dòng tiền vào và dòng tiền ra", correct: true}, {text: "Chỉ doanh thu", correct: false}, {text: "Chỉ lợi nhuận", correct: false}, {text: "Chỉ khấu hao", correct: false}] },
+            { question: "Yếu tố nào không ảnh hưởng đến dòng tiền dự án:", answers: [{text: "Chi phí chìm", correct: true}, {text: "Vốn lưu động tăng thêm", correct: false}, {text: "Thuế", correct: false}, {text: "Chi phí cơ hội", correct: false}] },
+            { question: "Chỉ số doanh lợi (PI) được tính bằng:", answers: [{text: "PV dòng tiền vào / Vốn đầu tư", correct: true}, {text: "NPV / Vốn đầu tư", correct: false}, {text: "Doanh thu / Chi phí", correct: false}, {text: "Lợi nhuận / Vốn", correct: false}] },
+            { question: "Dự án độc lập là những dự án:", answers: [{text: "Việc chấp nhận dự án này không ảnh hưởng dự án khác", correct: true}, {text: "Loại trừ lẫn nhau", correct: false}, {text: "Có cùng quy mô", correct: false}, {text: "Cùng thời gian", correct: false}] }
+        ]
+    };
+
+    // BIẾN TRẠNG THÁI
+    let quizQuestions = [];
+    let currentIdx = 0;
+    let selectedAnswers = new Array(30).fill(null);
+    let timer;
+    let timeLeft = 60;
+    let isSubmitted = false;
+
+    // KHỞI TẠO CÂU HỎI (Chọn theo phân bổ yêu cầu)
+    function initQuizPool() {
+        const selected = [
+            ...getRandom(allQuestions.chuong2, 8),
+            ...getRandom(allQuestions.chuong3, 5),
+            ...getRandom(allQuestions.chuong4, 4),
+            ...getRandom(allQuestions.chuong5, 6),
+            ...getRandom(allQuestions.chuong6, 7)
+        ];
+        
+        // Đảo câu hỏi
+        quizQuestions = selected.sort(() => Math.random() - 0.5);
+        
+        // Đảo đáp án trong từng câu
+        quizQuestions.forEach(q => {
+            q.answers = q.answers.sort(() => Math.random() - 0.5);
+        });
+    }
+
+    function getRandom(arr, n) {
+        let result = new Array(n),
+            len = arr.length,
+            taken = new Array(len);
+        if (n > len) return arr;
+        while (n--) {
+            let x = Math.floor(Math.random() * len);
+            result[n] = arr[x in taken ? taken[x] : x];
+            taken[x] = --len in taken ? taken[len] : len;
+        }
+        return result;
+    }
+
+    // GIAO DIỆN & TƯƠNG TÁC
+    const loginForm = document.getElementById('login-form');
+    const quizScreen = document.getElementById('quiz-screen');
+    const loginScreen = document.getElementById('login-screen');
+    const resultScreen = document.getElementById('result-screen');
+
+    loginForm.onsubmit = (e) => {
+        e.preventDefault();
+        const sid = document.getElementById('studentId').value;
+        
+        if(localStorage.getItem('submitted_' + sid)) {
+            alert('Mã sinh viên này đã hoàn thành bài thi trước đó!');
+            return;
+        }
+
+        loginScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        initQuizPool();
+        showQuestion();
+        startTimer();
+    };
+
+    function showQuestion() {
+        const q = quizQuestions[currentIdx];
+        document.getElementById('question-number').innerText = `Câu ${currentIdx + 1}/30`;
+        document.getElementById('question-text').innerText = q.question;
+        
+        const answerBox = document.getElementById('answer-buttons');
+        answerBox.innerHTML = '';
+        
+        q.answers.forEach((ans, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn';
+            if (selectedAnswers[currentIdx] === index) btn.classList.add('selected');
+            
+            btn.innerHTML = `<span style="font-weight:bold; margin-right:10px">${String.fromCharCode(65 + index)}.</span> ${ans.text}`;
+            btn.onclick = () => selectAnswer(index);
+            answerBox.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-fill').style.width = `${((currentIdx + 1) / 30) * 100}%`;
+        
+        // Update Nav Buttons
+        document.getElementById('prev-btn').disabled = currentIdx === 0;
+        if(currentIdx === 29) {
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+        }
+    }
+
+    function selectAnswer(index) {
+        selectedAnswers[currentIdx] = index;
+        showQuestion();
+    }
+
+    function startTimer() {
+        timeLeft = 60;
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = `Thời gian: ${timeLeft}s`;
+            if(timeLeft <= 0) {
+                if(currentIdx < 29) {
+                    currentIdx++;
+                    showQuestion();
+                    timeLeft = 60;
+                } else {
+                    submitQuiz();
+                }
+            }
+        }, 1000);
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+        currentIdx++;
+        showQuestion();
+        timeLeft = 60;
+    };
+
+    document.getElementById('prev-btn').onclick = () => {
+        currentIdx--;
+        showQuestion();
+    };
+
+    document.getElementById('submit-btn').onclick = submitQuiz;
+
+    function submitQuiz() {
+        if(isSubmitted) return;
+        isSubmitted = true;
+        clearInterval(timer);
+
+        let correctCount = 0;
+        selectedAnswers.forEach((ansIdx, qIdx) => {
+            if(ansIdx !== null && quizQuestions[qIdx].answers[ansIdx].correct) {
+                correctCount++;
+            }
+        });
+
+        const score = correctCount * 10;
+        const percent = (correctCount / 30) * 100;
+        const sid = document.getElementById('studentId').value;
+
+        // Lưu vào localStorage (giả lập cơ sở dữ liệu)
+        localStorage.setItem('submitted_' + sid, JSON.stringify({
+            name: document.getElementById('fullname').value,
+            score: score,
+            date: new Date().toLocaleString()
+        }));
+
+        displayResult(score, correctCount, percent);
+    }
+
+    function displayResult(score, count, percent) {
+        quizScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+        
+        document.getElementById('final-score').innerText = `${score}/300`;
+        document.getElementById('result-stats').innerText = `Số câu đúng: ${count}/30 (${percent.toFixed(1)}%)`;
+
+        let remark = "";
+        if (percent >= 90) remark = "Xuất sắc";
+        else if (percent >= 80) remark = "Tốt";
+        else if (percent >= 70) remark = "Khá";
+        else if (percent >= 60) remark = "Trung bình";
+        else remark = "Cần ôn tập thêm";
+
+        document.getElementById('remark').innerText = `Nhận xét: ${remark}`;
+    }
+</script>
+
+</body>
+</html>
